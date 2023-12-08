@@ -14,3 +14,24 @@ coverage.xml
 
 # Logs
 *.log
+
+# Web dependencies
+/web/node_modules
+/web/.pnp
+.pnp.js
+
+# Web testing
+/web/coverage
+
+# Web production
+/web/build
+
+# Web misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

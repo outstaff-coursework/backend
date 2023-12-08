@@ -1,0 +1,42 @@
+.header {
+    background-color: #2c302e;
+    height: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.header-content {
+    width: 67%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-content-left {
+    display: flex;
+    flex-direction: row;
+}
+
+.header-content-right {
+    display: flex;
+    flex-direction: row;
+}
+
+.header-content-left-logo-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-content-left-logo-section-logo {
+    width: 43px;
+    height: 43px;
+    border-radius: 43px;
+    background-color: #fffffa;
+}
+
+.header-content-left-logo-section-name {
+    color: #fffffa;
+}
