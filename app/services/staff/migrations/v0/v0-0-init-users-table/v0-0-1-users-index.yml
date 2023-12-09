@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: v0-2-0
+      author: Andrei Kurdun
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: manager_id
+            tableName: users

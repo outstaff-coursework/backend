@@ -1,0 +1,90 @@
+databaseChangeLog:
+  - changeSet:
+      id: v0-0-0
+      author: Andrei Kurdun
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: user_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: nickname
+                  type: varchar(16)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: patronymic
+                  type: varchar(30)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: email
+                  type: varchar(30)
+                  remarks: Почта
+                  constraints:
+                    unique: true
+                    nullable: true
+              - column:
+                  name: phone_number
+                  type: varchar(16)
+                  constraints:
+                    unique: true
+                    nullable: true
+              - column:
+                  name: telegram
+                  type: varchar(32)
+                  remarks: Telegram nickname
+                  constraints:
+                    unique: true
+                    nullable: true
+              - column:
+                  name: user_about
+                  type: varchar(255)
+                  remarks: Free space where the user can write whatever he want
+                  constraints:
+                    nullable: true
+              - column:
+                  name: position
+                  type: varchar(60)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: meta
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: manager_id
+                  type: int
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_user_id
+                    references: users(user_id)
+              - column:
+                  name: name_of_unit
+                  type: varchar(60)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: photo_url
+                  type: varchar(611)
+                  defaultValue: https://img.freepik.com/free-photo/ai-nuclear-energy-future-innovation-of-disruptive-technology_53876-129784.jpg?w=740&t=st=1702119512~exp=1702120112~hmac=519a45497bdcd0c42a6ad8ddaa5ad111782efeaff32a42d6af05c687fc9a9520
+                  constraints:
+                    nullable: true
