@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: Staff service API
+  version: 1.0.0
+servers:
+  - url: https://outstaff.com/api/v1
+paths:
+  /user/{user_id}:
+    get:
+      summary: Get employee by ID
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  nickname:
+                    type: string
+                  email:
+                    type: string
+                  telegram:
+                    type: string
+                  phone_number:
+                    type: string
+                  about_user:
+                    type: string
+                  timezone:
+                    type: string
+                  position:
+                    type: string
+        '404':
+          description: Employee not found
+  /users/{request}:
+    get:
+      summary: Search employees by request
+      parameters:
+        - in: path
+          name: request
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        id:
+                          type: integer
+                          format: int64
+                        position:
+                          type: string
