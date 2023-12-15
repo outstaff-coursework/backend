@@ -11,9 +11,9 @@ async def get_user(user_id: int, session: AsyncSession):
 async def get_users(request: str, session: AsyncSession):
     result = await session.execute(
         select(User).where(
-            (User.nickname.ilike(f"%{request}%")) | 
-            (User.first_name.ilike(f"%{request}%")) | 
-            (User.last_name.ilike(f"%{request}%")) | 
+            (User.nickname.ilike(f"%{request}%")) |
+            (User.first_name.ilike(f"%{request}%")) |
+            (User.last_name.ilike(f"%{request}%")) |
             (User.position.ilike(f"%{request}%"))
         )
     )
