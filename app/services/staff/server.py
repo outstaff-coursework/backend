@@ -3,7 +3,6 @@ from fastapi import Depends
 import service
 from sqlalchemy.ext.asyncio import AsyncSession
 from uvicorn import run as uvicorn_run
-import base_db_engine
 from pydantic import BaseModel
 from typing import List
 from base_db_engine import get_session, init_models
@@ -29,6 +28,7 @@ class UserInfoSchema(BaseModel):
     phone_number: str
     user_about: str
     position: str
+    photo_url: str
 
 
 @app.get("/user/{user_id}", response_model=UserInfoSchema)
@@ -42,6 +42,7 @@ async def get_user(user_id: int, session: AsyncSession = Depends(get_session)):
         phone_number=user.phone_number,
         user_about=user.user_about,
         position=user.position,
+        photo_url=user.photo_url
     )
 
 
