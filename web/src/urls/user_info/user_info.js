@@ -2,20 +2,31 @@ import React from "react";
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
 import './user_info.css';
+import {base_url} from "../../constants";
+
+import axios from "axios";
 
 class UserInfo extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = {}
+        this.state = {
+            id: '-1',
+            loaded_info: false,
+            name: '...',
+            nickname: '...',
+            about_user: '...',
+            photo_url: '...',
+            position: '...',
+        }
         this.state.example_info_table = {
             'Дата рождения': '26 июня 2003 года',
             'Дата выхода на работу': '7 июля 2023 года',
         }
-        this.state.example_contacts_table = {
-            'Telegram': '@address',
-            'Phone': '+7 800 555 35 35',
-            'E-mail': 'adress@example.com',
+        this.state.contacts_table = {
+            'Telegram': '...',
+            'Phone': '...',
+            'E-mail': '...',
         }
         this.state.meetings = {
             today: {
@@ -103,19 +114,62 @@ class UserInfo extends React.Component {
         return result;
     }
 
+    loadInfo() {
+        if (this.state.id == '-1') {
+            return
+        }
+        let url = base_url + '/user/' + this.state.id;
+        axios.get(url).then(res => {
+            let data = res.data;
+            this.setState({
+                contacts_table: {
+                    'Telegram': data['telegram'],
+                    'Phone': data['phone_number'],
+                    'E-mail': data['email'],
+                }
+            })
+            this.setState({
+                loaded_info: true,
+                name: data['name'],
+                nickname: data['nickname'],
+                about_user: data['about_user'],
+                photo_url: data['photo_url'],
+                position: data['position'],
+            });
+        });
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevState.id !== this.state.id) {
+            this.loadInfo();
+        }
+    }
+
+    componentDidMount() {
+        let path = window.location.pathname;
+        for (let i = path.length - 1; i > -1; --i) {
+            if (path[i] === '/') {
+                this.setState({id: path.slice(i + 1, path.length)});
+                break;
+            }
+        }
+    }
+
     render() {
         return (
             <>
                 <Header />
                 <div className='page'>
                     <div className='page-info'>
-                        <div className='page-info-photo' />
+                        <div className='page-info-photo'>
+                            <img src={this.state.photo_url} alt="photo" />
+                        </div>
                         <div className='page-info-data'>
                             <div className='page-info-data-name'>
-                                <h4>Иван Иванов</h4>
+                                <h4>{this.state.name}</h4>
                             </div>
                             <div className='page-info-data-post'>
-                                <span className='minor-text'>Разработчик</span>
+                                <span className='minor-text'>{this.state.position}</span>
                             </div>
                             <div className='page-info-data-status'>
                                 <h6 className='contrast-text'>На встрече с 11:00 до 12:00</h6>
@@ -125,7 +179,7 @@ class UserInfo extends React.Component {
                             </div>
                             <div className='page-info-data-about'>
                                 <h6>О себе:</h6>
-                                <span>Какая-то информация о себе или предложения о том, с кем можно было бы связаться, когда связаться с данным пользователем невозможно.</span>
+                                <span>{this.state.about_user}</span>
                             </div>
                             <div className='page-info-data-information'>
                                 <h6>Информация:</h6>
@@ -136,7 +190,7 @@ class UserInfo extends React.Component {
                             <div className='page-info-data-contacts'>
                                 <h6>Контакты:</h6>
                                 <div className='table'>
-                                    {this.genTable(this.state.example_contacts_table)}
+                                    {this.genTable(this.state.contacts_table)}
                                 </div>
                             </div>
                         </div>
