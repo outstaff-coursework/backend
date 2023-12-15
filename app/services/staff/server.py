@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi import Depends
 import service
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -34,6 +34,9 @@ class UserInfoSchema(BaseModel):
 @app.get("/user/{user_id}", response_model=UserInfoSchema)
 async def get_user(user_id: int, session: AsyncSession = Depends(get_session)):
     user = await service.get_user(user_id, session)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+        return
     return UserInfoSchema(
         name=user.first_name + " " + user.last_name + " " + user.patronymic,
         nickname=user.nickname,

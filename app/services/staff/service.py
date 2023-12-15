@@ -5,7 +5,10 @@ from models import User
 
 async def get_user(user_id: int, session: AsyncSession):
     result = await session.execute(select(User).where(User.user_id == user_id))
-    return result.scalars().one()
+    res_scal = result.scalars().all()
+    if (len(res_scal) == 0):
+        return None
+    return res_scal[0]
 
 
 async def get_users(request: str, session: AsyncSession):
