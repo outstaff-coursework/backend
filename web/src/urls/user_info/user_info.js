@@ -132,7 +132,7 @@ class UserInfo extends React.Component {
                 loaded_info: true,
                 name: data['name'],
                 nickname: data['nickname'],
-                about_user: data['about_user'],
+                about_user: data['user_about'],
                 photo_url: data['photo_url'],
                 position: data['position'],
             });

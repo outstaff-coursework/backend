@@ -1,13 +1,22 @@
-from fastapi import FastAPI, HTTPException
-from fastapi import Depends
+from typing import List
+
 import service
+from base_db_engine import get_session, init_models
+from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from uvicorn import run as uvicorn_run
-from pydantic import BaseModel
-from typing import List
-from base_db_engine import get_session, init_models
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class UserSearchSchema(BaseModel):
@@ -44,7 +53,7 @@ async def get_user(user_id: int, session: AsyncSession = Depends(get_session)):
         phone_number=user.phone_number,
         user_about=user.user_about,
         position=user.position,
-        photo_url=user.photo_url
+        photo_url=user.photo_url,
     )
 
 

@@ -30,7 +30,7 @@ class Header extends React.Component {
                 
                 new_peoples.push(
                     <div className='header-content-left-search-list-item'>
-                        <a href={'/user/' + element.id}>
+                        <a href={'/user/' + String(element.user_id)}>
                             <div className='header-content-left-search-list-item-a'>
                                 <span className='header-content-left-search-list-item-name'>{element.name}</span>
                                 <span className='header-content-left-search-list-item-position'>{element.position}</span>
