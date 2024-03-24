@@ -2,13 +2,23 @@ version: '3.8'
 services:
   postgresql:
     container_name: postgresql
-    image: postgres:15.2
+    image: postgres:15.5
     restart: unless-stopped
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: staff
+      POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - 5666:5432
+      - 5432:5432
+    networks:
+      - postgresql-network
+
+  migration:
+    image: liquibase/liquibase:4.25.0
+    volumes:
+      - ./migrations:/app
+    command: --defaults-file=/app/liquibase.properties update --changelog-file=main-changelog.yml --url=jdbc:postgresql://172.17.0.1:5432/staff --username=postgres
+    depends_on:
+      - postgresql
     networks:
       - postgresql-network
 
@@ -23,6 +33,19 @@ services:
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
     ports:
       - 5050:80
+    depends_on:
+      - postgresql
+    networks:
+      - postgresql-network
+
+  outstaff:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - 5555:5555
+    depends_on:
+      - migration
     networks:
       - postgresql-network
 
