@@ -42,7 +42,7 @@ async def get_user(data: User, session: AsyncSession = Depends(get_session)):
 
 
 @app.post("/register")
-async def register_user(data: User, username=Depends(login_manager), session: AsyncSession = Depends(get_session)):
+async def register_user(data: dict, username=Depends(login_manager), session: AsyncSession = Depends(get_session)):
     user = await service.get_pass(username)
     if user is None or not user.is_admin:
         raise InvalidCredentialsException
