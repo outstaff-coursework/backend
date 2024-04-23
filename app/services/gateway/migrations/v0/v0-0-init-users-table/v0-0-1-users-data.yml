@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: v0-1-0
+      author: Andrei Kurdun
+      changes:
+        - loadData:
+            file: datasets/passwords-table.csv
+            tableName: auth
+            separator: ","

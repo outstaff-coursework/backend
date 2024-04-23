@@ -14,6 +14,8 @@ app = FastAPI()
 SECRET_KEY = "mysecretkey"  # подложить енв переменную
 login_manager = LoginManager(SECRET_KEY, token_url="/login")
 
+STAFF_BASE_URL = ""
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -30,14 +32,14 @@ class User(BaseModel):
 
 
 @app.post("/login")
-async def get_user(data: User, session: AsyncSession = Depends(get_session)):
+async def get_user(data: dict, session: AsyncSession = Depends(get_session)):
     username = data.get("username")
     password = data.get("password")
-    user = await service.get_pass(username)
-    if user is None or user.password != password:
+    user = await service.get_pass(username, session)
+    if user is None or user.password_hash != password:
         raise InvalidCredentialsException
 
-    access_token = login_manager.create_access_token(data.dict(sub=username))
+    access_token = login_manager.create_access_token(data=dict(sub=username))
     return {"access_token": access_token}
 
 
@@ -46,6 +48,7 @@ async def register_user(data: dict, username=Depends(login_manager), session: As
     user = await service.get_pass(username)
     if user is None or not user.is_admin:
         raise InvalidCredentialsException
+    
     # TODO допилить метод, сделать регистрацию тут + в сервисе стаффа
     
 @app.put("/change_password/{username}")
@@ -65,5 +68,5 @@ async def change_user_password(username: str, data: dict, current_user=Depends(l
 # TODO это сервис по типу gateway, то есть каждая новая ручка в новом сервисе дублируется здесь и на нее идет запрос
 
 if __name__ == "__main__":
-    init_models()
+    # init_models()
     uvicorn_run(app, host="0.0.0.0", port=5556)

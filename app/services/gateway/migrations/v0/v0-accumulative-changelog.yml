@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: v0-0-init-users-table/v0-0-accumulative-changelog.yml
+      relativeToChangelogFile: true

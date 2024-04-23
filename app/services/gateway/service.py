@@ -4,7 +4,7 @@ from models import Auth
 
 
 async def get_pass(username: str, session: AsyncSession):
-    result = await session.execute(select(Auth).where(Auth.username == username))
+    result = await session.execute(select(Auth).where(Auth.nickname == username))
     res_scal = result.scalars().all()
     if (len(res_scal) == 0):
         return None

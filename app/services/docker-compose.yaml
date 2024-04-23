@@ -12,10 +12,20 @@ services:
     networks:
       - postgresql-network
 
-  migration:
+  staff-migration:
     image: liquibase/liquibase:4.25.0
     volumes:
-      - ./migrations:/app
+      - ./staff/migrations:/app
+    command: --defaults-file=/app/liquibase.properties update --changelog-file=main-changelog.yml --url=jdbc:postgresql://172.17.0.1:5432/staff --username=postgres
+    depends_on:
+      - postgresql
+    networks:
+      - postgresql-network
+
+  gateway-migration:
+    image: liquibase/liquibase:4.25.0
+    volumes:
+      - ./gateway/migrations:/app
     command: --defaults-file=/app/liquibase.properties update --changelog-file=main-changelog.yml --url=jdbc:postgresql://172.17.0.1:5432/staff --username=postgres
     depends_on:
       - postgresql
@@ -38,14 +48,25 @@ services:
     networks:
       - postgresql-network
 
-  outstaff:
-    build: .
+  staff:
+    build: ./staff
     volumes:
-      - .:/app
+      - ./staff:/app
     ports:
       - 5555:5555
     depends_on:
-      - migration
+      - staff-migration
+    networks:
+      - postgresql-network
+
+  gateway:
+    build: ./gateway
+    volumes:
+      - ./gateway:/app
+    ports:
+      - 5556:5556
+    depends_on:
+      - staff-migration
     networks:
       - postgresql-network
 
