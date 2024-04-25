@@ -41,7 +41,7 @@ class UserInfoSchema(BaseModel):
     position: str
     photo_url: str
     meta: str
-    manager_id: str
+    manager_id: int
     name_of_unit: str
 
 class UserCreateSchema(BaseModel):
@@ -59,9 +59,9 @@ class UserCreateSchema(BaseModel):
     manager_id: int
     name_of_unit: str
 
-@app.get("/user/{user_id}", response_model=UserInfoSchema)
-async def get_user(user_id: int, session: AsyncSession = Depends(get_session)):
-    user = await service.get_user(user_id, session)
+@app.get("/user/{username}", response_model=UserInfoSchema)
+async def get_user(username: str, session: AsyncSession = Depends(get_session)):
+    user = await service.get_user(username, session)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return UserInfoSchema(
@@ -92,7 +92,7 @@ async def search_users(request: str, session: AsyncSession = Depends(get_session
     ]
     return UserSearchList(items=items)
 
-@app.put("/user")
+@app.post("/user")
 async def create_user(userSchema: UserCreateSchema, session: AsyncSession = Depends(get_session)):
     user = User(
         nickname = userSchema.nickname,
@@ -115,8 +115,23 @@ async def create_user(userSchema: UserCreateSchema, session: AsyncSession = Depe
     else:
         raise HTTPException(status_code=400, detail="Cant create user")
 
-@app.post("/user/{user_id}")
-async def create_user(user_id: int, userSchema: UserCreateSchema, session: AsyncSession = Depends(get_session)):
+@app.put("/user/{username}")
+async def update_user(username: str, userSchema: UserCreateSchema, session: AsyncSession = Depends(get_session)):
+    user = User(
+        email = userSchema.email,
+        phone_number = userSchema.phone_number,
+        telegram = userSchema.telegram,
+        user_about = userSchema.user_about,
+        photo_url = userSchema.photo_url,
+        )
+    result = await service.update_user(username, user, session)
+    if result:
+        return {"200":"OK"}
+    else:
+        raise HTTPException(status_code=400, detail="Cant create user")
+    
+@app.put("/user/{username}/admin")
+async def update_user(username: str, userSchema: UserCreateSchema, session: AsyncSession = Depends(get_session)):
     user = User(
         nickname = userSchema.nickname,
         first_name = userSchema.first_name,
@@ -132,7 +147,7 @@ async def create_user(user_id: int, userSchema: UserCreateSchema, session: Async
         name_of_unit = userSchema.name_of_unit,
         photo_url = userSchema.photo_url,
         )
-    result = await service.update_user(user_id, user, session)
+    result = await service.update_user(username, user, session)
     if result:
         return {"200":"OK"}
     else:

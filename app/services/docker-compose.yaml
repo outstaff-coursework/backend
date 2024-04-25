@@ -32,6 +32,16 @@ services:
     networks:
       - postgresql-network
 
+  calendar-migration:
+    image: liquibase/liquibase:4.25.0
+    volumes:
+      - ./calendar/migrations:/app
+    command: --defaults-file=/app/liquibase.properties update --changelog-file=main-changelog.yml --url=jdbc:postgresql://172.17.0.1:5432/staff --username=postgres
+    depends_on:
+      - postgresql
+    networks:
+      - postgresql-network
+
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4:6.20
@@ -49,6 +59,7 @@ services:
       - postgresql-network
 
   staff:
+    container_name: staff
     build: ./staff
     volumes:
       - ./staff:/app
@@ -66,9 +77,22 @@ services:
     ports:
       - 5556:5556
     depends_on:
-      - staff-migration
+      - gateway-migration
     networks:
       - postgresql-network
+  
+  calendar:
+    container_name: calendar
+    build: ./calendar
+    volumes:
+      - ./calendar:/app
+    ports:
+      - 5555:5555
+    depends_on:
+      - calendar-migration
+    networks:
+      - postgresql-network
+    
 
 networks:
   postgresql-network:

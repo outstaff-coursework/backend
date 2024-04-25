@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: v0-0-0
+      author: Anton Gerasimenko
+      changes:
+        - createTable:
+            tableName: calendats
+            columns:
+              - column:
+                  name: user_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: nickname
+                  type: varchar(16)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: calendars
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
