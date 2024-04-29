@@ -1,6 +1,9 @@
 # Cache
 __pycache__/
+<<<<<<< HEAD
 .mypy_cache/
+=======
+>>>>>>> 958ab76... init dummy service on python
 
 # Unit test / coverage reports
 .tox/

@@ -1,8 +1,14 @@
+<<<<<<< HEAD
+=======
+image: python:3.9-slim
+
+>>>>>>> 958ab76... init dummy service on python
 cache:
   paths:
     - deps_cache
     - venv/
 
+<<<<<<< HEAD
 default:
   image: python:3.9-slim
   before_script:
@@ -11,11 +17,22 @@ default:
     - source venv/bin/activate
     - pip install -r requirements.txt --cache-dir deps_cache
     - export PYTHONPATH=$PYTHONPATH:pwd
+=======
+before_script:
+  - python --version
+  - python -m venv venv
+  - source venv/bin/activate
+  - pip install -r requirements.txt --cache-dir deps_cache
+  - export PYTHONPATH=$PYTHONPATH:pwd
+>>>>>>> 958ab76... init dummy service on python
 
 stages:
   - Static Analysis
   - Test
+<<<<<<< HEAD
   - Check DB mirations
+=======
+>>>>>>> 958ab76... init dummy service on python
 
 flake8:
   stage: Static Analysis
@@ -30,7 +47,11 @@ pylint:
 mypy:
   stage: Static Analysis
   script:
+<<<<<<< HEAD
     - mypy --ignore-missing-imports --explicit-package-bases .
+=======
+  - mypy --ignore-missing-imports --explicit-package-bases .
+>>>>>>> 958ab76... init dummy service on python
 
 pytest:
   stage: Test
@@ -42,6 +63,7 @@ pytest:
     reports:
       coverage_report:
         coverage_format: cobertura
+<<<<<<< HEAD
         path: coverage.xml
 
 checkstaffdb:  
@@ -84,3 +106,6 @@ checkstaffdb:
   artifacts:
     paths:
       - dbdoc/schema.svg
+=======
+        path: coverage.xml
+>>>>>>> 958ab76... init dummy service on python
