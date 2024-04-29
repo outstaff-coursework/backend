@@ -6,6 +6,5 @@ from base_db_engine import Base
 class Calendar(Base):
     __tablename__ = "calendars"
 
-    user_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    username = Column(String, unique=True, nullable=False)
+    username = Column(String, unique=True, primary_key=True, nullable=False)
     calendar_url = Column(String, nullable=False)

@@ -6,5 +6,6 @@ databaseChangeLog:
         - createIndex:
             columns:
               - column:
-                  name: manager_id
+                  name: username
+            unique: true
             tableName: users

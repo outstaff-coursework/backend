@@ -19,7 +19,7 @@ login_manager = LoginManager(SECRET_KEY, token_url="/login")
 async def load_user(user):
     async with async_session() as session:
         cur_user = await service.get_pass(user, session)
-        return cur_user.nickname
+        return cur_user.username
 
 STAFF_BASE_URL = "http://staff:5555"
 CALENDAR_BASE_URL = "http://calendar:5557"

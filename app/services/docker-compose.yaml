@@ -87,7 +87,7 @@ services:
     volumes:
       - ./calendar:/app
     ports:
-      - 5555:5555
+      - 5557:5557
     depends_on:
       - calendar-migration
     networks:

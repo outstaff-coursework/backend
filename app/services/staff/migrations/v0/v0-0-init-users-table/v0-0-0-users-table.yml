@@ -71,12 +71,10 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
-                  name: manager_id
-                  type: int
+                  name: manager_username
+                  type: varchar(16)
                   constraints:
                     nullable: true
-                    foreignKeyName: fk_user_id
-                    references: users(user_id)
               - column:
                   name: name_of_unit
                   type: varchar(60)

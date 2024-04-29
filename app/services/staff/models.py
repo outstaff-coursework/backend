@@ -18,6 +18,6 @@ class User(Base):
     user_about = Column(String, nullable=True)
     position = Column(String, nullable=False)
     meta = Column(String, nullable=True)
-    manager_id = Column(Integer, nullable=True)
+    manager_username = Column(Integer, nullable=True)
     name_of_unit = Column(String, nullable=True)
     photo_url = Column(String, nullable=True)

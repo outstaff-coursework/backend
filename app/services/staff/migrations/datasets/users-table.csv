@@ -1,3 +1,3 @@
-user_id,username,first_name,last_name,patronymic,email,phone_number,telegram,user_about,position,meta,manager_id,name_of_unit,photo_url
-1337228,admin,admin,1,1,1,1,1,1,1,1,1337228,1,1
-2281337,admin2,admin,2,2,2,2,2,2,2,2,2281337,2,2
+user_id,username,first_name,last_name,patronymic,email,phone_number,telegram,user_about,position,meta,manager_username,name_of_unit,photo_url
+1337228,admin,admin,1,1,1,1,1,1,1,1,,1,1
+2281337,admin2,admin,2,2,2,2,2,2,2,2,,2,2

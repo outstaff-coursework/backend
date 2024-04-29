@@ -23,7 +23,7 @@ app.add_middleware(
 
 class UserSearchSchema(BaseModel):
     name: str
-    user_id: int
+    username: str
     position: str
 
 
@@ -33,7 +33,7 @@ class UserSearchList(BaseModel):
 
 class UserInfoSchema(BaseModel):
     name: str
-    nickname: str
+    username: str
     email: str
     telegram: str
     phone_number: str
@@ -41,14 +41,14 @@ class UserInfoSchema(BaseModel):
     position: str
     photo_url: str
     meta: str
-    manager_id: int
+    manager_username: int
     name_of_unit: str
 
 class UserCreateSchema(BaseModel):
     first_name: str
     last_name: str
     patronymic: str
-    nickname: str
+    username: str
     email: str
     phone_number: str
     telegram: str
@@ -56,7 +56,7 @@ class UserCreateSchema(BaseModel):
     position: str
     photo_url: str
     meta: str
-    manager_id: int
+    manager_username: int
     name_of_unit: str
 
 @app.get("/user/{username}", response_model=UserInfoSchema)
@@ -66,7 +66,7 @@ async def get_user(username: str, session: AsyncSession = Depends(get_session)):
         raise HTTPException(status_code=404, detail="User not found")
     return UserInfoSchema(
         name=user.first_name + " " + user.last_name + " " + user.patronymic,
-        nickname=user.nickname,
+        username=user.username,
         email=user.email,
         telegram=user.telegram,
         phone_number=user.phone_number,
@@ -85,7 +85,7 @@ async def search_users(request: str, session: AsyncSession = Depends(get_session
     items = [
         UserSearchSchema(
             name=user.first_name + " " + user.last_name + " " + user.patronymic,
-            user_id=user.user_id,
+            username=user.username,
             position=user.position,
         )
         for user in users
@@ -95,7 +95,7 @@ async def search_users(request: str, session: AsyncSession = Depends(get_session
 @app.post("/user")
 async def create_user(userSchema: UserCreateSchema, session: AsyncSession = Depends(get_session)):
     user = User(
-        nickname = userSchema.nickname,
+        username = userSchema.username,
         first_name = userSchema.first_name,
         last_name = userSchema.last_name,
         patronymic = userSchema.patronymic,
@@ -105,7 +105,7 @@ async def create_user(userSchema: UserCreateSchema, session: AsyncSession = Depe
         user_about = userSchema.user_about,
         position = userSchema.position,
         meta = userSchema.meta,
-        manager_id = userSchema.manager_id,
+        manager_username = userSchema.manager_username,
         name_of_unit = userSchema.name_of_unit,
         photo_url = userSchema.photo_url,
         )
@@ -133,7 +133,7 @@ async def update_user(username: str, userSchema: UserCreateSchema, session: Asyn
 @app.put("/user/{username}/admin")
 async def update_user(username: str, userSchema: UserCreateSchema, session: AsyncSession = Depends(get_session)):
     user = User(
-        nickname = userSchema.nickname,
+        username = userSchema.username,
         first_name = userSchema.first_name,
         last_name = userSchema.last_name,
         patronymic = userSchema.patronymic,
@@ -143,7 +143,7 @@ async def update_user(username: str, userSchema: UserCreateSchema, session: Asyn
         user_about = userSchema.user_about,
         position = userSchema.position,
         meta = userSchema.meta,
-        manager_id = userSchema.manager_id,
+        manager_username = userSchema.manager_username,
         name_of_unit = userSchema.name_of_unit,
         photo_url = userSchema.photo_url,
         )

@@ -1,2 +1,2 @@
-user_id,nickname,password_hash,is_admin
-1,admin,admin,True
+username,calendar_url
+admin,https://calendar.google.com/calendar/ical/bouf12w%40gmail.com/private-ef0752bdb64bdc1758b0461cce12c902/basic.ics
