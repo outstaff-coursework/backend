@@ -32,6 +32,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class UserCreateSchema(BaseModel):
+    first_name: str
+    last_name: str
+    patronymic: str
+    username: str
+    email: str
+    phone_number: str
+    telegram: str
+    user_about: str
+    position: str
+    photo_url: str
+    meta: str
+    manager_username: int
+    name_of_unit: str
+
 
 @app.post("/login")
 async def get_user(data: dict, session: AsyncSession = Depends(get_session)):
@@ -51,7 +66,8 @@ async def register_user(data: dict, username=Depends(login_manager), session: As
     if user is None or not user.is_admin:
         raise InvalidCredentialsException
     service.create_user(data.get("username"), data.get("password"), data.get("is_admin"))
-    response = requests.post(f'{STAFF_BASE_URL}/user', json=data.model_dump())
+    data_req = UserCreateSchema.parse_obj(data)
+    response = requests.post(f'{STAFF_BASE_URL}/user', json=data_req)
     if response.status_code == 200:
         return response.json()
     else:
