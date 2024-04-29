@@ -7,6 +7,10 @@ sqlalchemy[all]
 flake8[all]
 <<<<<<< HEAD
 fastapi[all]
+<<<<<<< HEAD
 =======
 fastapi[all]
 >>>>>>> 958ab76... init dummy service on python
+=======
+fastapi_login[all]
+>>>>>>> cd66635... init_auth
