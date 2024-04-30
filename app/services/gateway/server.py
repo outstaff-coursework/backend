@@ -8,6 +8,7 @@ from uvicorn import run as uvicorn_run
 from fastapi_login import LoginManager
 from fastapi_login.exceptions import InvalidCredentialsException
 import requests
+from starlette.responses import Response
 # from werkzeug.security import generate_password_hash, check_password_hash
 
 app = FastAPI()
@@ -50,7 +51,7 @@ class UserCreateSchema(BaseModel):
 
 
 @app.post("/login")
-async def get_user(data: dict, session: AsyncSession = Depends(get_session)):
+async def get_user(data: dict, response = Response, session: AsyncSession = Depends(get_session)):
     username = data.get("username")
     password = data.get("password")
     user = await service.get_pass(username, session)
@@ -58,7 +59,8 @@ async def get_user(data: dict, session: AsyncSession = Depends(get_session)):
         raise InvalidCredentialsException
 
     access_token = login_manager.create_access_token(data=dict(sub=username))
-    return {"access_token": access_token}
+    login_manager.set_cookie(response, access_token)
+    return response
 
 
 @app.post("/register")
