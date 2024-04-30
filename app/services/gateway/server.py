@@ -9,6 +9,7 @@ from fastapi_login import LoginManager
 from fastapi_login.exceptions import InvalidCredentialsException
 import requests
 from starlette.responses import Response
+from datetime import timedelta
 # from werkzeug.security import generate_password_hash, check_password_hash
 
 app = FastAPI()
@@ -27,7 +28,7 @@ CALENDAR_BASE_URL = "http://calendar:5557"
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://158.160.53.9:3000", "http://158.160.53.9", "http://localhost"],
+    allow_origins=["http://158.160.53.9:3000", "http://158.160.53.9", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -51,14 +52,14 @@ class UserCreateSchema(BaseModel):
 
 
 @app.post("/login")
-async def get_user(data: dict, response = Response, session: AsyncSession = Depends(get_session)):
+async def login(data: dict, response: Response, session: AsyncSession = Depends(get_session)):
     username = data.get("username")
     password = data.get("password")
     user = await service.get_pass(username, session)
     if user is None or user.password != password:
         raise InvalidCredentialsException
-
-    access_token = login_manager.create_access_token(data=dict(sub=username))
+    response = Response("OK", status_code=200, headers=None, media_type=None)
+    access_token = login_manager.create_access_token(data=dict(sub=username), expires=timedelta(hours=12))
     login_manager.set_cookie(response, access_token)
     return response
 
