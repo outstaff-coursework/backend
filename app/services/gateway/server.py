@@ -26,7 +26,7 @@ CALENDAR_BASE_URL = "http://calendar:5557"
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://158.160.53.9:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
