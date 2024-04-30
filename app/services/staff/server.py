@@ -41,7 +41,7 @@ class UserInfoSchema(BaseModel):
     position: str
     photo_url: str
     meta: str
-    manager_username: int
+    manager_username: str
     name_of_unit: str
 
 class UserCreateSchema(BaseModel):
@@ -56,7 +56,7 @@ class UserCreateSchema(BaseModel):
     position: str
     photo_url: str
     meta: str
-    manager_username: int
+    manager_username: str
     name_of_unit: str
 
 @app.get("/user/{username}", response_model=UserInfoSchema)
@@ -74,7 +74,7 @@ async def get_user(username: str, session: AsyncSession = Depends(get_session)):
         position=user.position,
         photo_url=user.photo_url,
         meta = user.meta,
-        manager_id = user.manager_id,
+        manager_username = user.manager_username,
         name_of_unit = user.name_of_unit,
     )
 
