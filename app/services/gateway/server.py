@@ -14,7 +14,7 @@ from starlette.responses import Response
 app = FastAPI()
 
 SECRET_KEY = "mysecretkey"  # подложить енв переменную
-login_manager = LoginManager(SECRET_KEY, token_url="/login")
+login_manager = LoginManager(SECRET_KEY, token_url="/login", use_cookie=True)
 
 @login_manager.user_loader()
 async def load_user(user):
