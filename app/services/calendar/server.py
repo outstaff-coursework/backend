@@ -25,7 +25,7 @@ class Event(BaseModel):
 class Events(BaseModel):
     events: List[Event]
     current_event: Event
-    dates: list[date]
+    dates: List[date]
 
 @app.get("/calendar/{username}")
 async def get_calendar(username: str, data: dict, session: AsyncSession = Depends(get_session)):
