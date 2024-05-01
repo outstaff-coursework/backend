@@ -116,9 +116,9 @@ async def search_users(request: str, current_user=Depends(login_manager)):
 async def update_user(username: str, data: dict, current_user=Depends(login_manager)):
     if not current_user.is_admin and current_user.username != username:
         raise HTTPException(status_code=403, detail="You are not authorized to change this user's info")
-    response = requests.put(f'{STAFF_BASE_URL}/user/{username}', json=data.model_dump())
+    response = requests.put(f'{STAFF_BASE_URL}/user/{username}', json=data)
     if current_user.is_admin:
-        response = requests.put(f'{STAFF_BASE_URL}/user/{username}/admin', json=data.model_dump())
+        response = requests.put(f'{STAFF_BASE_URL}/user/{username}/admin', json=data)
     if response.status_code == 200:
         return response.json()
     else:
@@ -126,10 +126,10 @@ async def update_user(username: str, data: dict, current_user=Depends(login_mana
 # endregion
 # region: calendar
 @app.get("/calendar/{username}")
-async def get_user(username: str, current_user=Depends(login_manager)):
+async def get_user(username: str, data: dict, current_user=Depends(login_manager)):
     if current_user is None: 
         raise InvalidCredentialsException
-    response = requests.get(f'{CALENDAR_BASE_URL}/calendar/{username}')
+    response = requests.get(f'{CALENDAR_BASE_URL}/calendar/{username}', json=data)
     if response.status_code == 200:
         return response.json()
     else:
@@ -140,7 +140,7 @@ async def get_user(username: str, current_user=Depends(login_manager)):
 async def get_user(username: str, data: dict, current_user=Depends(login_manager)):
     if current_user is None: 
         raise InvalidCredentialsException
-    response = requests.post(f'{CALENDAR_BASE_URL}/calendar/{username}', json=data.model_dump())
+    response = requests.post(f'{CALENDAR_BASE_URL}/calendar/{username}', json=data)
     if response.status_code == 200:
         return response.json()
     else:

@@ -7,7 +7,8 @@ from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 import service
-from datetime import datetime
+import pytz
+from datetime import datetime, timedelta, date, time
 from typing import List
 
 app = FastAPI()
@@ -16,29 +17,60 @@ class Event(BaseModel):
     summary: str
     description: str
     participants: List[str]
-    end_time: datetime
-    start_time: datetime
+    end_time: time
+    start_time: time
+    start_date: date
+    end_date: date
 
 class Events(BaseModel):
     events: List[Event]
+    current_event: Event
+    dates: list[date]
 
 @app.get("/calendar/{username}")
-async def get_calendar(username: str, session: AsyncSession = Depends(get_session)):
+async def get_calendar(username: str, data: dict, session: AsyncSession = Depends(get_session)):
+    print(data)
     calendar = await service.get_calendar_url(username, session)
     if calendar is None:
         raise HTTPException(status_code=404, detail="Calendar not found")
     cal = Calendar.from_ical(requests.get(calendar.calendar_url).text)
-    events = [
-        Event(
-            summary=str(component.get('summary', b'')),
-            description=str(component.get('description', b'')),
-            participants=[str(attendee) for attendee in component.get('attendees', [])],
-            end_time=component.get('dtend').dt,
-            start_time=component.get('dtstart').dt
-        )
-        for component in cal.walk() if component.name == "VEVENT"
-    ]
-    return events
+    count = int(data.get("days"))
+    start_date = datetime(2021, 3, 17, 9, 0, 0)
+    end_date = datetime(2021, 3, 17, 9, 0, 0)
+    if count == 3:
+        start_date = datetime.today()
+        end_date = start_date + timedelta(days=3)
+    elif count == 7:
+        today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
+        start_date = today - timedelta(days=today.weekday())
+        end_date = start_date + timedelta(days=7)
+    start_date = start_date.replace(tzinfo=pytz.UTC)
+    end_date = end_date.replace(tzinfo=pytz.UTC)
+    events = []
+    dates = []
+    for date in range(start_date.day, end_date.day):
+        dates.append(date)
+    for component in cal.walk():
+        if component.name == "VEVENT":
+            event_start = component.get('DTSTART').dt.replace(tzinfo=pytz.UTC)
+            event_end = component.get('DTEND').dt.replace(tzinfo=pytz.UTC)
+            if event_start >= start_date and event_end < end_date:
+                participants = component.get('ATTENDEE', [])
+                participants_list = [p for p in participants]
+                event_title = str(component.get('SUMMARY'))
+                event_description = str(component.get('DESCRIPTION'))
+                event = Event(
+                    summary=event_title,
+                    description=event_description,
+                    participants=participants_list,
+                    start_time=event_start.time(),
+                    start_date=event_start.date(), 
+                    end_time=event_end.time(),
+                    end_date=event_end.date(),
+                )
+                events.append(event)
+        
+    return Events(events=events, current_event=events[0], dates=dates)
 
 @app.put("/calendar/{username}/url")
 async def put_calendar(username: str, data: dict, session: AsyncSession = Depends(get_session)):
