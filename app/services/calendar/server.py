@@ -28,13 +28,11 @@ class Events(BaseModel):
     dates: List[date]
 
 @app.get("/calendar/{username}")
-async def get_calendar(username: str, data: dict, session: AsyncSession = Depends(get_session)):
-    print(data)
+async def get_calendar(username: str, count: int, session: AsyncSession = Depends(get_session)):
     calendar = await service.get_calendar_url(username, session)
     if calendar is None:
         raise HTTPException(status_code=404, detail="Calendar not found")
     cal = Calendar.from_ical(requests.get(calendar.calendar_url).text)
-    count = int(data.get("days"))
     start_date = datetime(2021, 3, 17, 9, 0, 0)
     end_date = datetime(2021, 3, 17, 9, 0, 0)
     if count == 3:
