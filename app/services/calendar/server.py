@@ -38,7 +38,7 @@ async def get_calendar(username: str, data: dict, session: AsyncSession = Depend
     start_date = datetime(2021, 3, 17, 9, 0, 0)
     end_date = datetime(2021, 3, 17, 9, 0, 0)
     if count == 3:
-        start_date = datetime.today()
+        start_date = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
         end_date = start_date + timedelta(days=3)
     elif count == 7:
         today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
@@ -48,15 +48,22 @@ async def get_calendar(username: str, data: dict, session: AsyncSession = Depend
     end_date = end_date.replace(tzinfo=pytz.UTC)
     events = []
     dates = []
-    for date in range(start_date.day, end_date.day):
-        dates.append(date)
+    print(type(start_date))
+    print(type(end_date))
+    for single_date in (start_date.date() + timedelta(n) for n in range(count)):
+        dates.append(single_date)
     for component in cal.walk():
         if component.name == "VEVENT":
             event_start = component.get('DTSTART').dt.replace(tzinfo=pytz.UTC)
             event_end = component.get('DTEND').dt.replace(tzinfo=pytz.UTC)
             if event_start >= start_date and event_end < end_date:
                 participants = component.get('ATTENDEE', [])
-                participants_list = [p for p in participants]
+                print(participants)
+                participants_list = []
+                if type(participants) != list:
+                    participants_list = [participants]
+                else:
+                    participants_list = [p for p in participants]
                 event_title = str(component.get('SUMMARY'))
                 event_description = str(component.get('DESCRIPTION'))
                 event = Event(
