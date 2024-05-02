@@ -126,10 +126,10 @@ async def update_user(username: str, data: dict, current_user=Depends(login_mana
 # endregion
 # region: calendar
 @app.get("/calendar/{username}")
-async def get_user(username: str, data: dict, current_user=Depends(login_manager)):
+async def get_user(username: str, count: int, current_user=Depends(login_manager)):
     if current_user is None: 
         raise InvalidCredentialsException
-    response = requests.get(f'{CALENDAR_BASE_URL}/calendar/{username}', json=data)
+    response = requests.get(f'{CALENDAR_BASE_URL}/calendar/{username}?count=' + str(count))
     if response.status_code == 200:
         return response.json()
     else:
