@@ -35,6 +35,7 @@ async def get_calendar(username: str, count: int, session: AsyncSession = Depend
     cal = Calendar.from_ical(requests.get(calendar.calendar_url).text)
     start_date = datetime(2021, 3, 17, 9, 0, 0)
     end_date = datetime(2021, 3, 17, 9, 0, 0)
+    # tz=pytz.timezone("Etc/GMT-7")
     if count == 3:
         start_date = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
         end_date = start_date + timedelta(days=3)
@@ -53,6 +54,7 @@ async def get_calendar(username: str, count: int, session: AsyncSession = Depend
     current_event = None
     for component in cal.walk():
         if component.name == "VEVENT":
+            print(component.get('DTSTART').dt.replace(tzinfo=pytz.UTC))
             event_start = component.get('DTSTART').dt.replace(tzinfo=pytz.UTC)
             event_end = component.get('DTEND').dt.replace(tzinfo=pytz.UTC)
             if event_start >= start_date and event_end < end_date:
@@ -69,9 +71,9 @@ async def get_calendar(username: str, count: int, session: AsyncSession = Depend
                     summary=event_title,
                     description=event_description,
                     participants=participants_list,
-                    start_time=event_start.time(),
+                    start_time=(event_start + timedelta( hours=3 )).time(),
                     start_date=event_start.date(), 
-                    end_time=event_end.time(),
+                    end_time=(event_end + timedelta( hours=3 )).time(),
                     end_date=event_end.date(),
                 )
                 events.append(event)
