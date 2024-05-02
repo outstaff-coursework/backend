@@ -9,7 +9,7 @@ from pydantic import BaseModel
 import service
 import pytz
 from datetime import datetime, timedelta, date, time
-from typing import List
+from typing import List, Optional
 
 app = FastAPI()
 
@@ -24,7 +24,7 @@ class Event(BaseModel):
 
 class Events(BaseModel):
     events: List[Event]
-    current_event: Event
+    current_event: Optional[Event]
     dates: List[date]
 
 @app.get("/calendar/{username}")
@@ -52,6 +52,7 @@ async def get_calendar(username: str, data: dict, session: AsyncSession = Depend
     print(type(end_date))
     for single_date in (start_date.date() + timedelta(n) for n in range(count)):
         dates.append(single_date)
+    current_event = None
     for component in cal.walk():
         if component.name == "VEVENT":
             event_start = component.get('DTSTART').dt.replace(tzinfo=pytz.UTC)
@@ -76,8 +77,10 @@ async def get_calendar(username: str, data: dict, session: AsyncSession = Depend
                     end_date=event_end.date(),
                 )
                 events.append(event)
+                if event_start <= datetime.now(pytz.UTC) <= event_end:
+                    current_event = event
         
-    return Events(events=events, current_event=events[0], dates=dates)
+    return Events(events=events, current_event=current_event, dates=dates)
 
 @app.put("/calendar/{username}/url")
 async def put_calendar(username: str, data: dict, session: AsyncSession = Depends(get_session)):
