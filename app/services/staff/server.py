@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from uvicorn import run as uvicorn_run
 import asyncio
+from datetime import date
 from models import User
 
 app = FastAPI()
@@ -43,6 +44,8 @@ class UserInfoSchema(BaseModel):
     meta: str
     manager_username: str
     name_of_unit: str
+    date_of_birth: date
+    start_date: date
 
 class UserCreateSchema(BaseModel):
     first_name: str
@@ -58,6 +61,8 @@ class UserCreateSchema(BaseModel):
     meta: str
     manager_username: str
     name_of_unit: str
+    date_of_birth: date
+    start_date: date
 
 @app.get("/user/{username}", response_model=UserInfoSchema)
 async def get_user(username: str, session: AsyncSession = Depends(get_session)):
@@ -76,6 +81,8 @@ async def get_user(username: str, session: AsyncSession = Depends(get_session)):
         meta = user.meta,
         manager_username = user.manager_username,
         name_of_unit = user.name_of_unit,
+        date_of_birth = user.date_of_birth,
+        start_date = user.start_date
     )
 
 
@@ -108,6 +115,8 @@ async def create_user(userSchema: UserCreateSchema, session: AsyncSession = Depe
         manager_username = userSchema.manager_username,
         name_of_unit = userSchema.name_of_unit,
         photo_url = userSchema.photo_url,
+        date_of_birth = userSchema.date_of_birth,
+        start_date = userSchema.start_date
         )
     result = await service.create_user(user, session)
     if result:
@@ -146,6 +155,8 @@ async def update_user(username: str, userSchema: UserCreateSchema, session: Asyn
         manager_username = userSchema.manager_username,
         name_of_unit = userSchema.name_of_unit,
         photo_url = userSchema.photo_url,
+        date_of_birth = userSchema.date_of_birth,
+        start_date = userSchema.start_date
         )
     result = await service.update_user(username, user, session)
     if result:

@@ -1,6 +1,7 @@
 from sqlalchemy import Column
 from sqlalchemy import String
 from sqlalchemy import Integer
+from sqlalchemy import Date
 from base_db_engine import Base
 
 
@@ -21,3 +22,5 @@ class User(Base):
     manager_username = Column(Integer, nullable=True)
     name_of_unit = Column(String, nullable=True)
     photo_url = Column(String, nullable=True)
+    date_of_birth = Column(Date, nullable=True) 
+    start_date = Column(Date, nullable=True)

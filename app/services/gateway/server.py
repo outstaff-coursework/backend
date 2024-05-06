@@ -9,7 +9,7 @@ from fastapi_login import LoginManager
 from fastapi_login.exceptions import InvalidCredentialsException
 import requests
 from starlette.responses import Response
-from datetime import timedelta
+from datetime import timedelta, date
 # from werkzeug.security import generate_password_hash, check_password_hash
 
 app = FastAPI()
@@ -47,8 +47,10 @@ class UserCreateSchema(BaseModel):
     position: str
     photo_url: str
     meta: str
-    manager_username: int
+    manager_username: str
     name_of_unit: str
+    date_of_birth: date
+    start_date: date
 
 
 @app.post("/login")
@@ -116,9 +118,11 @@ async def search_users(request: str, current_user=Depends(login_manager)):
 async def update_user(username: str, data: dict, current_user=Depends(login_manager)):
     if not current_user.is_admin and current_user.username != username:
         raise HTTPException(status_code=403, detail="You are not authorized to change this user's info")
-    response = requests.put(f'{STAFF_BASE_URL}/user/{username}', json=data)
+    data_req = UserCreateSchema.parse_obj(data)
+    response = requests.put(f'{STAFF_BASE_URL}/user/{username}', json=data_req)
     if current_user.is_admin:
-        response = requests.put(f'{STAFF_BASE_URL}/user/{username}/admin', json=data)
+        response = requests.put(f'{STAFF_BASE_URL}/user/{username}/admin', json=data_req) 
+        
     if response.status_code == 200:
         return response.json()
     else:

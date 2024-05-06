@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: v0-0-0
-      author: Andrei Kurdun
+      author: Anton Gerasimenko
       changes:
         - createTable:
             tableName: users
@@ -86,3 +86,13 @@ databaseChangeLog:
                   defaultValue: https://img.freepik.com/free-photo/ai-nuclear-energy-future-innovation-of-disruptive-technology_53876-129784.jpg?w=740&t=st=1702119512~exp=1702120112~hmac=519a45497bdcd0c42a6ad8ddaa5ad111782efeaff32a42d6af05c687fc9a9520
                   constraints:
                     nullable: true
+              - column:
+                  name: date_of_birth
+                  type: date
+                  constraints:
+                    nullable: False
+              - column:
+                  name: start_date
+                  type: date
+                  constraints:
+                    nullable: False

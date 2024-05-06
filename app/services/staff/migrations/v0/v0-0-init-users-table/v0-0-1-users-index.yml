@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: v0-2-0
-      author: Andrei Kurdun
+      author: Anton Gerasimenko
       changes:
         - createIndex:
             columns:

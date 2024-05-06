@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: v0-1-0
-      author: Gerasimenk Anton
+      author: Anton Gerasimenko
       changes:
         - loadData:
             file: datasets/calendars-table.csv
