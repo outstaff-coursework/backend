@@ -68,16 +68,21 @@ async def login(data: dict, response: Response, session: AsyncSession = Depends(
 
 @app.post("/register")
 async def register_user(data: dict, username=Depends(login_manager), session: AsyncSession = Depends(get_session)):
-    user = await service.get_pass(username)
+    user = await service.get_pass(username, session)
     if user is None or not user.is_admin:
         raise InvalidCredentialsException
-    service.create_user(data.get("username"), data.get("password"), data.get("is_admin"))
+    service.create_user(data.get("username"), data.get("password"), data.get("is_admin"), session)
     data_req = UserCreateSchema.parse_obj(data)
     response = requests.post(f'{STAFF_BASE_URL}/user', json=data_req)
     if response.status_code == 200:
-        return response.json()
+        response = requests.put(f'{CALENDAR_BASE_URL}/calendar/{data.get("username")}/url', json=data_req)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise HTTPException(status_code=response.status_code, detail=response.reason)
     else:
         raise HTTPException(status_code=response.status_code, detail=response.reason)
+    
     
 
 @app.put("/change_password/{username}")
