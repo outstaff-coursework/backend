@@ -47,10 +47,10 @@ class UserCreateSchema(BaseModel):
     position: str
     photo_url: str
     meta: str
-    manager_username: str
+    manager_username: int
     name_of_unit: str
-    date_of_birth: date
-    start_date: date
+    date_of_birth: str
+    start_date: str
 
 
 @app.post("/login")
@@ -73,9 +73,9 @@ async def register_user(data: dict, username=Depends(login_manager), session: As
         raise InvalidCredentialsException
     service.create_user(data.get("username"), data.get("password"), data.get("is_admin"), session)
     data_req = UserCreateSchema.parse_obj(data)
-    response = requests.post(f'{STAFF_BASE_URL}/user', json=data_req)
+    response = requests.post(f'{STAFF_BASE_URL}/user', json=data_req.model_dump())
     if response.status_code == 200:
-        response = requests.put(f'{CALENDAR_BASE_URL}/calendar/{data.get("username")}/url', json=data_req)
+        response = requests.put(f'{CALENDAR_BASE_URL}/calendar/{data.get("username")}/url', json=data_req.model_dump())
         if response.status_code == 200:
             return response.json()
         else:

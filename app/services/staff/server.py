@@ -1,3 +1,4 @@
+import datetime
 from typing import List
 
 import service
@@ -59,10 +60,10 @@ class UserCreateSchema(BaseModel):
     position: str
     photo_url: str
     meta: str
-    manager_username: str
+    manager_username: int
     name_of_unit: str
-    date_of_birth: date
-    start_date: date
+    date_of_birth: str
+    start_date: str
 
 @app.get("/user/{username}", response_model=UserInfoSchema)
 async def get_user(username: str, session: AsyncSession = Depends(get_session)):
@@ -102,6 +103,7 @@ async def search_users(request: str, session: AsyncSession = Depends(get_session
 @app.post("/user")
 async def create_user(userSchema: UserCreateSchema, session: AsyncSession = Depends(get_session)):
     user = User(
+        user_id = 10,
         username = userSchema.username,
         first_name = userSchema.first_name,
         last_name = userSchema.last_name,
@@ -115,8 +117,8 @@ async def create_user(userSchema: UserCreateSchema, session: AsyncSession = Depe
         manager_username = userSchema.manager_username,
         name_of_unit = userSchema.name_of_unit,
         photo_url = userSchema.photo_url,
-        date_of_birth = userSchema.date_of_birth,
-        start_date = userSchema.start_date
+        date_of_birth = datetime.datetime.strptime(userSchema.date_of_birth, '%Y-%m-%d'),
+        start_date = datetime.datetime.strptime(userSchema.start_date, '%Y-%m-%d')
         )
     result = await service.create_user(user, session)
     if result:
